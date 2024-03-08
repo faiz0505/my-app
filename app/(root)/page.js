@@ -1,11 +1,7 @@
 import React from "react";
 import { Button } from "@nextui-org/button";
 const page = () => {
-  return (
-    <div>
-      <Button color="primary">click</Button>
-    </div>
-  );
+  return <div>Home page</div>;
 };
 
 export default page;
