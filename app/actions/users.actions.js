@@ -7,14 +7,8 @@ import { userModel } from "@/lib/db/models";
 export const createUser = async (user) => {
   try {
     await dbConnection();
-    const newUser = await userModel.create({
-      clerkId: user.clerkId,
-      name: user.name,
-      username: user.username,
-      email: user.email,
-      profilePic: user.profilePic,
-    });
-    return newUser;
+    const newUser = await userModel.create(user);
+    return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
     ErrorHandler(error);
   }

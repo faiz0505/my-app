@@ -9,7 +9,6 @@ import {
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import Btn from "./Button";
-import Profile from "./Profile";
 const Header = () => {
   return (
     <Navbar>
