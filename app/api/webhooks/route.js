@@ -53,36 +53,36 @@ export async function POST(req) {
   // Get the ID and type
   const { id } = evt.data;
   const eventType = evt.type;
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
-  console.log("Webhook body:", body);
-  // if (eventType === "user.created") {
-  //   console.log("event fired", eventType);
-  //   const {
-  //     id,
-  //     email_addresses,
-  //     image_url,
-  //     first_name,
-  //     last_name,
-  //     username,
-  //   } = evt.data;
-  //   const user = {
-  //     clerkId: id,
-  //     email: email_addresses[0].email_addresse,
-  //     username: username,
-  //     name: first_name + " " + last_name,
-  //     profilePic: image_url,
-  //   };
-  //   console.log(user);
-  //   const newUser = await createUser(user);
-  //   if (newUser) {
-  //     await clerkClient.users.updateUserMetadata(id, {
-  //       publicMetadata: {
-  //         userId: newUser._id,
-  //       },
-  //     });
-  //   }
-  //   return NextResponse.json({ message: "OK", user: newUser });
-  // }
+  // console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
+  // console.log("Webhook body:", body);
+  if (eventType === "user.created") {
+    console.log("event fired", eventType);
+    const {
+      id,
+      email_addresses,
+      image_url,
+      first_name,
+      last_name,
+      username,
+    } = evt.data;
+    const user = {
+      clerkId: id,
+      email: email_addresses[0].email_addresse,
+      username: username,
+      name: first_name + " " + last_name,
+      profilePic: image_url,
+    };
+    console.log(user);
+    const newUser = await createUser(user);
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser._id,
+        },
+      });
+    }
+    return NextResponse.json({ message: "OK", user: newUser });
+  }
 
   return new Response("", { status: 200 });
 }
