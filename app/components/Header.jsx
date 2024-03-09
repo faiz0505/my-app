@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Navbar,
@@ -7,19 +8,32 @@ import {
 } from "@nextui-org/navbar";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import Link from "next/link";
+import Btn from "./Button";
+import Profile from "./Profile";
 const Header = () => {
   return (
     <Navbar>
-      <NavbarBrand>My-APP</NavbarBrand>
+      <NavbarBrand>
+        <Link href={"/"}>My-App</Link>
+      </NavbarBrand>
       <NavbarContent justify="end">
         <NavbarItem>
           <SignedIn>
-            <UserButton />
+            <UserButton
+              afterSignOutUrl="/"
+              userProfileMode="navigation"
+              userProfileUrl="/user-profile"
+            />
           </SignedIn>
           <SignedOut>
-            <button>
-              <Link href={"/sign-in"}>SignIn</Link>
-            </button>
+            <div className="flex gap-x-2">
+              <Btn variant={"ghost"} color={"primary"} size={"sm"}>
+                <Link href={"/sign-up"}>Register</Link>
+              </Btn>
+              <Btn variant={"solid"} color={"primary"} size={"sm"}>
+                <Link href={"/sign-in"}>Login</Link>
+              </Btn>
+            </div>
           </SignedOut>
         </NavbarItem>
       </NavbarContent>
