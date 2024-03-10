@@ -65,11 +65,11 @@ export async function POST(req) {
       username,
     } = evt.data;
     const user = {
-      clerkId: id,
-      email: email_addresses[0].email_address,
-      username: username,
-      name: first_name,
-      profilePic: image_url,
+      clerkId: "id_dfdjfjd",
+      email: "faizs@example.com",
+      username: "username",
+      name: "first_name",
+      profilePic: "image_url",
     };
 
     const newUser = await createUser(user);
