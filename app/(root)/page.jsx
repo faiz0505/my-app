@@ -1,28 +1,13 @@
-"use client";
 import React from "react";
-import { Button } from "@nextui-org/button";
-import { ErrorHandler } from "../utils/errorHandler";
-import { createUser } from "../actions/users.actions";
-const page = () => {
-  const user = {
-    clerkId: "sdh_dhsg",
-    email: "faizali@gmail.com",
-    username: "username",
-    name: "first_name",
-    profilePic: "image_url",
-  };
-  const sendData = async () => {
-    try {
-      const newUser = await createUser(user);
-      console.log(newUser);
-    } catch (error) {
-      ErrorHandler(error);
-    }
-  };
+import { allPosts } from "@/app/actions/post.actions";
+// import { getFollowes } from "../actions/follow.action";
+const page = async () => {
+  const posts = await allPosts();
+  // const data = await getFollowes();
   return (
-    <div>
-      <Button onPress={sendData}>send data</Button>
-    </div>
+    <main className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 px-2 md:px-8 lg:px-20 py-5">
+      {posts}
+    </main>
   );
 };
 

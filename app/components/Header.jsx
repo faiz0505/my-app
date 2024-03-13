@@ -18,11 +18,20 @@ const Header = () => {
       <NavbarContent justify="end">
         <NavbarItem>
           <SignedIn>
-            <UserButton
-              afterSignOutUrl="/"
-              userProfileMode="navigation"
-              userProfileUrl="/user-profile"
-            />
+            <div className="flex gap-x-2">
+              <Btn
+                color={"primary"}
+                size={"sm"}
+                startContent={<h1 className="text-xl font-bold pb-1">+</h1>}
+              >
+                <Link href={"create-post"}>upload post</Link>
+              </Btn>
+              <UserButton
+                afterSignOutUrl="/"
+                userProfileMode="navigation"
+                userProfileUrl="/user-profile"
+              />
+            </div>
           </SignedIn>
           <SignedOut>
             <div className="flex gap-x-2">
