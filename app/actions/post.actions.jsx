@@ -1,20 +1,22 @@
 "use server";
 
 import { dbConnection } from "@/lib/db/connection";
-import { postModel } from "@/lib/db/models";
+import { postModel, userModel } from "@/lib/db/models";
 import PostCard from "@/app/components/PostCard";
 import { ErrorHandler } from "@/utils/errorHandler";
+import { revalidatePath } from "next/cache";
 export const allPosts = async (userId) => {
   // console.log(userId);
   try {
     await dbConnection();
     const posts = await postModel.find();
+
     return posts.map((post) => {
       return (
         <PostCard
           key={post._id}
           isAuthenticated={post.user.toString() === userId}
-          user={post.user.toString()}
+          userId={post.user.toString()}
           caption={post.caption}
           imageUrl={post.imageUrl}
         />
@@ -48,6 +50,7 @@ export const createNewPost = async (data) => {
       updatedAt: "",
       user: data.user,
     });
+    revalidatePath("/", "page");
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
     ErrorHandler(error);

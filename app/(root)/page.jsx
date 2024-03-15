@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs";
 // import { getFollowes } from "../actions/follow.action";
 const page = async () => {
   const { userId } = auth();
+  // console.log(userId);
   const posts = await allPosts(userId);
   // const data = await getFollowes();
   return (

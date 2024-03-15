@@ -89,7 +89,7 @@ const postForm = ({ userId }) => {
       <CardBody>
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
           {file.url ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col gap-y-2">
               <figure className="relative h-64 w-full">
                 <Image
                   src={file.url}

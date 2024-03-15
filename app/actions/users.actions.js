@@ -20,7 +20,7 @@ export async function updateUser(clerkId, user) {
     const updatedUser = await userModel.findOneAndUpdate({ clerkId }, user, {
       new: true,
     });
-
+    revalidatePath("/", "layout");
     if (!updatedUser) throw new Error("User update failed");
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
@@ -63,3 +63,12 @@ export async function deleteUser(clerkId) {
     handleError(error);
   }
 }
+
+export const fetchUserById = async (userId) => {
+  try {
+    const userData = await userModel.findById(userId);
+    return JSON.parse(JSON.stringify(userData));
+  } catch (error) {
+    ErrorHandler(error);
+  }
+};

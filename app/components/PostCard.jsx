@@ -12,20 +12,33 @@ import {
   FaRegPaperPlane,
 } from "react-icons/fa6";
 import Link from "next/link";
-import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import DividerComp from "./DividerComp";
 import UserComp from "./UserComp";
-
 import Image from "next/image";
-const PostCard = ({ isAuthenticated, user, imageUrl, caption }) => {
+import { fetchUserById } from "../actions/users.actions";
+import { useAuth, useUser } from "@clerk/nextjs";
+const PostCard = ({ userId, imageUrl, caption }) => {
   const [isFollowed, setIsFollowed] = useState(false);
+  const [userData, setUserData] = useState({});
+  const [authenticatedUser, setAuthenticatedUser] = useState();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // console.log(userId);
+  // const { isLoaded, isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded, user } = useUser();
+  const fetchUser = async () => {
+    const res = await fetchUserById(userId);
+    setUserData(res);
+  };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
   return (
     <Card>
       <CardHeader>
-        {isAuthenticated ? (
+        {user?.publicMetadata.userId === userId ? (
           <div className="ml-auto">
-            <PopoverComp
+            {/* <PopoverComp
               placement={"top-left"}
               radius={"none"}
               trigger={<FaEllipsis />}
@@ -36,19 +49,20 @@ const PostCard = ({ isAuthenticated, user, imageUrl, caption }) => {
                   <Btn text={"Logout"} color={"danger"} radius={"none"} />
                 </div>
               }
-            />
+            /> */}
           </div>
         ) : (
           <div className="w-full flex justify-between items-center">
             <UserComp
-            // name={userInfo.name}
-            // description={userInfo.username}
-            // profilePic={userInfo.profilePicture}
+              name={userData.name}
+              username={userData.username}
+              profilePic={userData.profilePic}
             />
             <Btn
               color={"primary"}
               variant={isFollowed ? "bordered" : "solid"}
               text={"Follow"}
+              isDisabled={(!isLoaded || !isSignedIn) && true}
               // handleClick={() => handleFollow()}
             />
           </div>
@@ -62,8 +76,7 @@ const PostCard = ({ isAuthenticated, user, imageUrl, caption }) => {
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt="Image"
-            className="px-2"
-            objectFit="contain"
+            className="px-2 object-contain"
             loading="lazy"
           />
         </figure>
@@ -72,26 +85,26 @@ const PostCard = ({ isAuthenticated, user, imageUrl, caption }) => {
       <DividerComp />
       <CardFooter>
         <Btn
-          isIcon={true}
+          isIconOnly={true}
           variant={"none"}
           icon={<FaRegHeart className="text-xl" />}
           radius={"full"}
         />
         <Btn
-          isIcon={true}
+          isIconOnly={true}
           variant={"none"}
           icon={<FaRegComment className="text-xl" />}
           radius={"full"}
         />
         <Btn
-          isIcon={true}
+          isIconOnly={true}
           variant={"none"}
           icon={<FaRegPaperPlane className="text-xl" />}
           radius={"full"}
         />
         <Btn
           className={"ml-auto"}
-          isIcon={true}
+          isIconOnly={true}
           variant={"none"}
           icon={<FaRegBookmark className="text-xl" />}
           radius={"full"}
