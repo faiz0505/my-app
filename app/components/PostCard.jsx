@@ -106,7 +106,7 @@ const PostCard = ({ userId, imageUrl, caption, ...props }) => {
         <LikeBtn isLiked={false} isSignedIn={isSignedIn} isLoaded={isLoaded} />
         <CommentBtn />
         <ShareBtn />
-        <SaveBtn isSaved={true} isLoaded={isLoaded} isSignedIn={isSignedIn} />
+        <SaveBtn isSaved={false} isLoaded={isLoaded} isSignedIn={isSignedIn} />
       </CardFooter>
     </Card>
   );

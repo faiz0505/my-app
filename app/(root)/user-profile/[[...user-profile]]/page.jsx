@@ -11,9 +11,7 @@ const UserProfilePage = () => (
         labelIcon={<BsPostcardHeartFill />}
         url="your-posts"
       >
-        <div className="flex items-center flex-col">
-          <Profile />
-        </div>
+        <Profile />
       </UserProfile.Page>
     </UserProfile>
   </main>

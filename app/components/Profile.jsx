@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { Spinner } from "@nextui-org/react";
 
 import PostCard from "./PostCard";
+import ProfileDetails from "./ProfileDetails";
 const Profile = () => {
   const [posts, setPosts] = useState();
   const [loading, setLoading] = useState(true);
@@ -21,20 +22,23 @@ const Profile = () => {
     return <Spinner />;
   }
   return (
-    <div className="max-h-[80vh] w-full md:w-2/3 2xl:w-full overflow-x-hidden overflow-y-scroll scrollbar-hide grid gap-2 2xl:grid-cols-2 md:px-1">
-      {posts.map((post) => {
-        return (
-          <PostCard
-            key={post._id}
-            isAuthenticated={true}
-            userId={post.user.toString()}
-            caption={post.caption}
-            imageUrl={post.imageUrl}
-            shadow={"sm"}
-          />
-        );
-      })}
-    </div>
+    <section className="max-h-[85vh] overflow-x-hidden overflow-y-scroll scrollbar-hide">
+      <ProfileDetails />
+      <div className="grid gap-2 2xl:grid-cols-2 md:px-1 mt-5 w-full md:w-2/3 mx-auto">
+        {posts.map((post) => {
+          return (
+            <PostCard
+              key={post._id}
+              isAuthenticated={true}
+              userId={post.user.toString()}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+              shadow={"sm"}
+            />
+          );
+        })}
+      </div>
+    </section>
   );
 };
 

@@ -6,7 +6,6 @@ import PostCard from "@/app/components/PostCard";
 import { ErrorHandler } from "@/utils/errorHandler";
 import { revalidatePath } from "next/cache";
 export const allPosts = async (userId) => {
-  // console.log(userId);
   try {
     await dbConnection();
     const posts = await postModel.find();
