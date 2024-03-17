@@ -6,7 +6,7 @@ const page = () => {
   const userId = sessionClaims._id.userId;
   // console.log(userId);
   return (
-    <main className="wrapper">
+    <main className="wrapper px-2">
       <PostForm userId={userId} />
     </main>
   );

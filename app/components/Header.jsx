@@ -24,7 +24,7 @@ const Header = () => {
                 size={"sm"}
                 startContent={<h1 className="text-xl font-bold pb-1">+</h1>}
               >
-                <Link href={"create-post"}>upload post</Link>
+                <Link href={"/create-post"}>upload post</Link>
               </Btn>
               <UserButton
                 afterSignOutUrl="/"

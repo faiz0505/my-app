@@ -31,9 +31,8 @@ export const userPosts = async (userId) => {
   try {
     await dbConnection();
     const allPosts = await postModel.find();
-    const posts = allPosts.filter((post) => post.user.toSting() === userId);
-
-    return JSON.stringify(posts);
+    const posts = allPosts.filter((post) => post.user?.toString() === userId);
+    return JSON.parse(JSON.stringify(posts));
   } catch (error) {
     console.log(error);
   }
@@ -50,7 +49,7 @@ export const createNewPost = async (data) => {
       updatedAt: "",
       user: data.user,
     });
-    revalidatePath("/", "page");
+    revalidatePath("/", "layout");
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
     ErrorHandler(error);

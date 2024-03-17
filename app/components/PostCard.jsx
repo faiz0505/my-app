@@ -1,29 +1,23 @@
 "use client";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import React, { useEffect, useState } from "react";
-// import PopoverComp from "./PopoverComp";
+import PopoverComp from "./PopoverComp";
 import Btn from "./Button";
-import {
-  FaEllipsis,
-  FaHeart,
-  FaRegHeart,
-  FaRegComment,
-  FaRegBookmark,
-  FaRegPaperPlane,
-} from "react-icons/fa6";
-import Link from "next/link";
 import DividerComp from "./DividerComp";
 import UserComp from "./UserComp";
 import Image from "next/image";
 import { fetchUserById } from "../actions/users.actions";
-import { useAuth, useUser } from "@clerk/nextjs";
-const PostCard = ({ userId, imageUrl, caption }) => {
+import { useUser } from "@clerk/nextjs";
+import { Input } from "@nextui-org/react";
+import FollowBtn from "./buttons/FollowBtn";
+import LikeBtn from "./buttons/LikeBtn";
+import CommentBtn from "./buttons/CommentBtn";
+import ShareBtn from "./buttons/ShareBtn";
+import SaveBtn from "./buttons/SaveBtn";
+const PostCard = ({ userId, imageUrl, caption, ...props }) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [userData, setUserData] = useState({});
-  const [authenticatedUser, setAuthenticatedUser] = useState();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // console.log(userId);
-  // const { isLoaded, isSignedIn } = useAuth();
+  const [isEditPost, setIsEditPost] = useState(false);
   const { isSignedIn, isLoaded, user } = useUser();
   const fetchUser = async () => {
     const res = await fetchUserById(userId);
@@ -33,82 +27,86 @@ const PostCard = ({ userId, imageUrl, caption }) => {
   useEffect(() => {
     fetchUser();
   }, []);
+
   return (
-    <Card>
+    <Card {...props}>
       <CardHeader>
-        {user?.publicMetadata.userId === userId ? (
-          <div className="ml-auto">
-            {/* <PopoverComp
-              placement={"top-left"}
-              radius={"none"}
-              trigger={<FaEllipsis />}
+        <div className="w-full flex justify-between items-center">
+          <UserComp
+            name={userData?.name}
+            username={userData?.username}
+            profilePic={userData?.profilePic}
+          />
+          {user?.publicMetadata.userId === userId ? (
+            <PopoverComp
+              placement={"bottom-end"}
+              radius={"sm"}
+              trigger={
+                <span className="cursor-pointer font-bold text-lg">...</span>
+              }
               children={
-                <div className="flex flex-col gap-y-2 items-center">
-                  <Link href={"/edit-post"}>Edit Post</Link>
+                <div className="flex flex-col gap-y-2 items-center px-2 py-2">
+                  <Btn
+                    text={"Edit Post"}
+                    color={"primary"}
+                    radius={"sm"}
+                    variant={"light"}
+                    handleClick={() => {
+                      setIsEditPost((pre) => !pre);
+                    }}
+                  />
                   <DividerComp />
-                  <Btn text={"Logout"} color={"danger"} radius={"none"} />
+                  <Btn text={"Delete post"} color={"danger"} radius={"sm"} />
                 </div>
               }
-            /> */}
-          </div>
-        ) : (
-          <div className="w-full flex justify-between items-center">
-            <UserComp
-              name={userData.name}
-              username={userData.username}
-              profilePic={userData.profilePic}
             />
-            <Btn
-              color={"primary"}
-              variant={isFollowed ? "bordered" : "solid"}
-              text={"Follow"}
-              isDisabled={(!isLoaded || !isSignedIn) && true}
-              // handleClick={() => handleFollow()}
+          ) : (
+            <FollowBtn
+              isFollowed={isFollowed}
+              isLoaded={isLoaded}
+              isSignedIn={isSignedIn}
             />
-          </div>
-        )}
+          )}
+        </div>
       </CardHeader>
       <DividerComp />
-      <CardBody>
+      <CardBody className="h-80">
         <figure className="relative h-64 w-full mb-2">
           <Image
             src={imageUrl}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             alt="Image"
-            className="px-2 object-contain"
+            className="object-contain"
             loading="lazy"
           />
         </figure>
-        <p className="text-sm">{caption}</p>
+        {isEditPost ? (
+          <form className="flex gap-1">
+            <Input
+              defaultValue={caption}
+              autoFocus
+              variant="bordered"
+              size="sm"
+              color="primary"
+            />
+            <Btn
+              type={"submit"}
+              text={"update"}
+              size={"sm"}
+              color={"primary"}
+            />
+          </form>
+        ) : (
+          <p className="text-sm">{caption}</p>
+        )}
       </CardBody>
       <DividerComp />
       <CardFooter>
-        <Btn
-          isIconOnly={true}
-          variant={"none"}
-          icon={<FaRegHeart className="text-xl" />}
-          radius={"full"}
-        />
-        <Btn
-          isIconOnly={true}
-          variant={"none"}
-          icon={<FaRegComment className="text-xl" />}
-          radius={"full"}
-        />
-        <Btn
-          isIconOnly={true}
-          variant={"none"}
-          icon={<FaRegPaperPlane className="text-xl" />}
-          radius={"full"}
-        />
-        <Btn
-          className={"ml-auto"}
-          isIconOnly={true}
-          variant={"none"}
-          icon={<FaRegBookmark className="text-xl" />}
-          radius={"full"}
-        />
+        <LikeBtn isLiked={false} isSignedIn={isSignedIn} isLoaded={isLoaded} />
+        <CommentBtn />
+        <ShareBtn />
+        <SaveBtn isSaved={true} isLoaded={isLoaded} isSignedIn={isSignedIn} />
       </CardFooter>
     </Card>
   );

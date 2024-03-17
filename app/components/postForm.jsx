@@ -58,7 +58,7 @@ const postForm = ({ userId }) => {
         const newPost = await createNewPost(data);
         if (newPost) {
           toast.success("post uploaded successfully");
-          router.push("/");
+          router.push("/user-profile/your-posts");
         } else {
           toast.error("something went wrong");
           const deleteImage = await deleteImageFromUT(file.key);
@@ -79,7 +79,7 @@ const postForm = ({ userId }) => {
     }
   };
   return (
-    <Card className="w-[40vw]">
+    <Card className="md:w-[40vw] w-full">
       <CardHeader className="justify-between">
         <h2>Upload new post</h2>
         <Btn color={"primary"} size={"sm"}>
