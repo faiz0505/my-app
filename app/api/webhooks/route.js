@@ -79,7 +79,7 @@ export async function POST(req) {
       followers: [],
       followings: [],
       createdAt: new Date().toLocaleDateString(),
-      updatedAt: createdAt,
+      updatedAt: "",
     };
 
     const newUser = await createUser(user);
@@ -100,6 +100,7 @@ export async function POST(req) {
       lastName: last_name,
       username: username,
       profilePic: image_url,
+      updatedAt: new Date().toLocaleDateString(),
     };
 
     const updatedUser = await updateUser(id, user);

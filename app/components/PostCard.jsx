@@ -14,20 +14,30 @@ import LikeBtn from "./buttons/LikeBtn";
 import CommentBtn from "./buttons/CommentBtn";
 import ShareBtn from "./buttons/ShareBtn";
 import SaveBtn from "./buttons/SaveBtn";
+import { usePathname } from "next/navigation";
 const PostCard = ({ userId, imageUrl, caption, ...props }) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [userData, setUserData] = useState({});
   const [isEditPost, setIsEditPost] = useState(false);
+  const [currentFollowStatus, setCurrentFollowStatus] = useState();
   const { isSignedIn, isLoaded, user } = useUser();
+  const pathname = usePathname();
   const fetchUser = async () => {
     const res = await fetchUserById(userId);
     setUserData(res);
   };
-
+  // console.log(userData);
   useEffect(() => {
     fetchUser();
   }, []);
-
+  useEffect(() => {
+    if (user && userData) {
+      const checkFollowStatus = userData?.followers.includes(
+        user?.publicMetadata.userId
+      );
+      setCurrentFollowStatus(checkFollowStatus);
+    }
+  }, [userData, user]);
   return (
     <Card {...props}>
       <CardHeader>
@@ -65,6 +75,10 @@ const PostCard = ({ userId, imageUrl, caption, ...props }) => {
               isFollowed={isFollowed}
               isLoaded={isLoaded}
               isSignedIn={isSignedIn}
+              follower={userId}
+              following={user?.publicMetadata.userId}
+              path={pathname}
+              currentStatus={currentFollowStatus}
             />
           )}
         </div>
