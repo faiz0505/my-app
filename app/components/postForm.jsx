@@ -8,7 +8,6 @@ import Image from "next/image";
 import { UploadDropzone } from "@uploadthing/react";
 import { deleteImageFromUT } from "@/app/actions/image.delete.action";
 import toast from "react-hot-toast";
-import { ErrorHandler } from "@/utils/errorHandler";
 import { createNewPost } from "@/app/actions/post.actions";
 import { useRouter } from "next/navigation";
 
@@ -73,7 +72,7 @@ const postForm = ({ userId }) => {
         }
       }
     } catch (error) {
-      ErrorHandler(error);
+      throw new Error(error);
     } finally {
       setSubmitLoading(false);
     }
