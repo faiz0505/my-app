@@ -2,7 +2,6 @@
 
 import { dbConnection } from "@/lib/db/connection";
 import { userModel } from "@/lib/db/models";
-import { ErrorHandler } from "@/utils/errorHandler";
 import { revalidatePath } from "next/cache";
 
 export const handleFollow = async (followerUserId, followingUserId, path) => {
@@ -27,6 +26,21 @@ export const handleFollow = async (followerUserId, followingUserId, path) => {
     revalidatePath(path);
     return isFollowing ? "unfollowed" : "followed";
   } catch (error) {
-    ErrorHandler(error);
+    throw new Error(error);
+  }
+};
+
+// get follows
+export const getFollows = async (user, req) => {
+  try {
+    await dbConnection();
+    const userData = await userModel.findById(user);
+    if (req === "followers") {
+      return JSON.parse(JSON.stringify(userData.followers));
+    } else {
+      return JSON.parse(JSON.stringify(userData.followings));
+    }
+  } catch (error) {
+    throw new Error(error);
   }
 };

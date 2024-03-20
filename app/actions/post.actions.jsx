@@ -3,7 +3,6 @@
 import { dbConnection } from "@/lib/db/connection";
 import { postModel, userModel } from "@/lib/db/models";
 import PostCard from "@/app/components/PostCard";
-import { ErrorHandler } from "@/utils/errorHandler";
 import { revalidatePath } from "next/cache";
 export const allPosts = async (userId) => {
   try {
@@ -51,6 +50,6 @@ export const createNewPost = async (data) => {
     revalidatePath("/", "layout");
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
-    ErrorHandler(error);
+    // ErrorHandler(error);
   }
 };

@@ -1,7 +1,6 @@
 "use server";
 
 import { dbConnection } from "@/lib/db/connection";
-import { ErrorHandler } from "../../utils/errorHandler";
 import { userModel } from "@/lib/db/models";
 import { revalidatePath } from "next/cache";
 export const createUser = async (user) => {
@@ -10,7 +9,7 @@ export const createUser = async (user) => {
     const newUser = await userModel.create(user);
     return JSON.parse(JSON.stringify(newUser));
   } catch (error) {
-    ErrorHandler(error);
+    // ErrorHandler(error);
   }
 };
 export async function updateUser(clerkId, user) {
@@ -24,7 +23,7 @@ export async function updateUser(clerkId, user) {
     if (!updatedUser) throw new Error("User update failed");
     return JSON.parse(JSON.stringify(updatedUser));
   } catch (error) {
-    handleError(error);
+    // ErrorHandler(error);
   }
 }
 
@@ -60,7 +59,7 @@ export async function deleteUser(clerkId) {
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
   } catch (error) {
-    handleError(error);
+    // handleError(error);
   }
 }
 
@@ -69,6 +68,6 @@ export const fetchUserById = async (userId) => {
     const userData = await userModel.findById(userId);
     return JSON.parse(JSON.stringify(userData));
   } catch (error) {
-    ErrorHandler(error);
+    // ErrorHandler(error);
   }
 };

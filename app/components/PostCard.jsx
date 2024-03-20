@@ -15,6 +15,7 @@ import CommentBtn from "./buttons/CommentBtn";
 import ShareBtn from "./buttons/ShareBtn";
 import SaveBtn from "./buttons/SaveBtn";
 import { usePathname } from "next/navigation";
+import { getFollows } from "../actions/social.actions";
 const PostCard = ({ userId, imageUrl, caption, ...props }) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [userData, setUserData] = useState({});
@@ -26,18 +27,20 @@ const PostCard = ({ userId, imageUrl, caption, ...props }) => {
     const res = await fetchUserById(userId);
     setUserData(res);
   };
-  // console.log(userData);
+  // console.log(user);
   useEffect(() => {
     fetchUser();
   }, []);
   useEffect(() => {
-    if (user && userData) {
-      const checkFollowStatus = userData?.followers.includes(
-        user?.publicMetadata.userId
-      );
-      setCurrentFollowStatus(checkFollowStatus);
+    if (user) {
+      getFollows(userId, "followers").then((res) => {
+        const getStatus = res.includes(user.publicMetadata.userId);
+        setCurrentFollowStatus(getStatus);
+        // console.log(getStatus);
+      });
     }
-  }, [userData, user]);
+  }, [user]);
+  // console.log(user?.publicMetadata.userId);
   return (
     <Card {...props}>
       <CardHeader>
