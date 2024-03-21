@@ -4,6 +4,7 @@ import { dbConnection } from "@/lib/db/connection";
 import { postModel, userModel } from "@/lib/db/models";
 import PostCard from "@/app/components/PostCard";
 import { revalidatePath } from "next/cache";
+import { utapi } from "@/utils/server/uploadthing";
 export const allPosts = async (userId) => {
   try {
     await dbConnection();
@@ -13,10 +14,12 @@ export const allPosts = async (userId) => {
       return (
         <PostCard
           key={post._id}
+          postId={post._id.toString()}
           isAuthenticated={post.user.toString() === userId}
           userId={post.user.toString()}
           caption={post.caption}
           imageUrl={post.imageUrl}
+          imageKey={post.imageKey}
         />
       );
     });
@@ -51,5 +54,19 @@ export const createNewPost = async (data) => {
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
     // ErrorHandler(error);
+  }
+};
+
+export const deletePost = async (postId, imageKey) => {
+  try {
+    await dbConnection();
+    const res = await postModel.deleteOne({ _id: postId });
+    const deleteImage = await utapi.deleteFiles(imageKey);
+    revalidatePath("/", "page");
+    revalidatePath("/profile", "page");
+    console.log(deleteImage);
+    return JSON.parse(JSON.stringify(res));
+  } catch (error) {
+    throw new Error(error);
   }
 };

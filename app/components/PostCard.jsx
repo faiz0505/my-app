@@ -16,7 +16,8 @@ import ShareBtn from "./buttons/ShareBtn";
 import SaveBtn from "./buttons/SaveBtn";
 import { usePathname } from "next/navigation";
 import { getFollows } from "../actions/social.actions";
-const PostCard = ({ userId, imageUrl, caption, ...props }) => {
+import { deletePost } from "../actions/post.actions";
+const PostCard = ({ userId, postId, imageUrl, caption, ...props }) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [userData, setUserData] = useState({});
   const [isEditPost, setIsEditPost] = useState(false);
@@ -40,7 +41,9 @@ const PostCard = ({ userId, imageUrl, caption, ...props }) => {
       });
     }
   }, [user]);
-  // console.log(user?.publicMetadata.userId);
+  const handleDeletePost = async (e) => {
+    const res = await deletePost(postId);
+  };
   return (
     <Card {...props}>
       <CardHeader>
@@ -69,7 +72,12 @@ const PostCard = ({ userId, imageUrl, caption, ...props }) => {
                     }}
                   />
                   <DividerComp />
-                  <Btn text={"Delete post"} color={"danger"} radius={"sm"} />
+                  <Btn
+                    text={"Delete post"}
+                    color={"danger"}
+                    radius={"sm"}
+                    handleClick={handleDeletePost}
+                  />
                 </div>
               }
             />
