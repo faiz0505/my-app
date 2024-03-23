@@ -3,78 +3,65 @@ import Btn from "@/app/components/Button";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { UploadDropzone } from "@uploadthing/react";
 import { deleteImageFromUT } from "@/app/actions/image.delete.action";
 import toast from "react-hot-toast";
 import { createNewPost } from "@/app/actions/post.actions";
 import { useRouter } from "next/navigation";
+import { FileUploader } from "react-drag-drop-files";
+import { uploadImage } from "../actions/image.actions";
+import { uploadFiles } from "@/utils/client/uploadthing";
 
 const postForm = ({ userId }) => {
-  const [file, setFile] = useState({
-    url: "",
-    key: "",
-    name: "",
-  });
-  const [submitLoading, setSubmitLoading] = useState(false);
-  const [removeImageLoading, setRemoveImageLoading] = useState(false);
-  const router = useRouter();
+  const [imageUrl, setImageUrl] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleDeleteImage = async () => {
-    try {
-      setRemoveImageLoading(true);
-      const deleteImage = await deleteImageFromUT(file.key);
-      if (deleteImage) {
-        toast.success("Image has been removed successfully");
-        setFile({
-          url: "",
-          key: "",
-          name: "",
-        });
-      }
-    } catch (error) {
-      ErrorHandler(error);
-    } finally {
-      setRemoveImageLoading(false);
+  const router = useRouter();
+  const handleImageChange = async (file) => {
+    if (file.url) {
+      URL.revokeObjectURL(file.url);
+    }
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
     }
   };
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
       const formData = new FormData(e.target);
-      if (!file.url && !file.key) {
-        toast.error("please select an image");
+      const image = formData.getAll("image");
+      const caption = formData.get("caption");
+      if (!image[0].size > 0) {
+        toast.error("please select an Image");
       } else {
-        const caption = formData.get("caption");
-        const data = {
-          caption: caption,
-          imageUrl: file.url,
-          imageKey: file.key,
-          user: userId,
-        };
-        setSubmitLoading(true);
-        const newPost = await createNewPost(data);
-        if (newPost) {
-          toast.success("post uploaded successfully");
-          router.push("/user-profile/your-posts");
-        } else {
-          toast.error("something went wrong");
-          const deleteImage = await deleteImageFromUT(file.key);
-          if (deleteImage) {
-            toast.success("Image has been removed successfully");
-            setFile({
-              url: "",
-              key: "",
-              name: "",
-            });
+        setIsLoading(true);
+        const res = await uploadFiles("imageUploader", {
+          files: image,
+        });
+        if (res) {
+          const uploadPost = await createNewPost({
+            caption: caption,
+            imageUrl: res[0].url,
+            imageKey: res[0].key,
+            user: userId,
+          });
+          if (uploadPost) {
+            toast.success("post uploaded successfully");
+            router.push("/user-profile/user-posts");
           }
+        } else {
+          toast.error("image upload failed please try again");
         }
       }
     } catch (error) {
+      console.log(error);
       throw new Error(error);
     } finally {
-      setSubmitLoading(false);
+      setIsLoading(false);
     }
   };
   return (
@@ -87,47 +74,32 @@ const postForm = ({ userId }) => {
       </CardHeader>
       <CardBody>
         <form onSubmit={handleSubmit} className="flex flex-col gap-y-2">
-          {file.url ? (
-            <div className="flex flex-col gap-y-2">
+          {imageUrl && (
+            <div>
               <figure className="relative h-64 w-full">
                 <Image
-                  src={file.url}
+                  src={imageUrl}
                   fill
                   objectFit="contain"
-                  alt={file.name}
+                  alt={""}
                   priority
                 />
               </figure>
-              <Btn
-                color={"danger"}
-                text={"remove"}
-                handleClick={handleDeleteImage}
-                isLoading={removeImageLoading}
-              />
             </div>
-          ) : (
-            <UploadDropzone
-              endpoint="imageUploader"
-              onClientUploadComplete={(res) => {
-                setFile({
-                  url: res[0].url,
-                  key: res[0].key,
-                  name: res[0].name,
-                });
-              }}
-              onUploadError={(error) => {
-                // Do something with the error.
-                alert(`ERROR! ${error.message}`);
-              }}
-            />
           )}
+
+          <FileUploader
+            name="image"
+            types={["JPG", "PNG", "JPEG", "GIF"]}
+            handleChange={handleImageChange}
+          />
 
           <Input type="text" name="caption" placeholder="caption" />
           <Btn
             type={"submit"}
             text={"submit"}
             color={"primary"}
-            isLoading={submitLoading}
+            isLoading={isLoading}
           />
         </form>
       </CardBody>

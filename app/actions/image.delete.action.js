@@ -1,11 +1,11 @@
 "use server";
-const { utApi } = require("@/utils/uploadthing");
+import { utapi } from "@/utils/server/uploadthing";
 
 export const deleteImageFromUT = async (keys) => {
   try {
-    const res = await utApi.deleteFiles(keys);
+    const res = await utapi.deleteFiles(keys);
     return res.success;
   } catch (error) {
-    // ErrorHandler(error);
+    throw new Error(error);
   }
 };

@@ -17,7 +17,14 @@ import SaveBtn from "./buttons/SaveBtn";
 import { usePathname } from "next/navigation";
 import { getFollows } from "../actions/social.actions";
 import { deletePost } from "../actions/post.actions";
-const PostCard = ({ userId, postId, imageUrl, caption, ...props }) => {
+const PostCard = ({
+  userId,
+  postId,
+  imageUrl,
+  imageKey,
+  caption,
+  ...props
+}) => {
   const [isFollowed, setIsFollowed] = useState(false);
   const [userData, setUserData] = useState({});
   const [isEditPost, setIsEditPost] = useState(false);
@@ -41,8 +48,9 @@ const PostCard = ({ userId, postId, imageUrl, caption, ...props }) => {
       });
     }
   }, [user]);
-  const handleDeletePost = async (e) => {
-    const res = await deletePost(postId);
+  const handleDeletePost = async () => {
+    const res = await deletePost(postId, imageKey);
+    console.log(res);
   };
   return (
     <Card {...props}>
